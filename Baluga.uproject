@@ -1,0 +1,12 @@
+json
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.1",
+	"Modules": [
+		{
+			"Name": "Beluga",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
