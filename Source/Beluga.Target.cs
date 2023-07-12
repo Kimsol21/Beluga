@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class BelugaTarget : TargetRules
 {
-	public BelugaTarget( TargetInfo Target) : base(Target)
+	public BelugaTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;

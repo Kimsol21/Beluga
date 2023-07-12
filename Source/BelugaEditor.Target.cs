@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class BelugaEditorTarget : TargetRules
 {
-	public BelugaEditorTarget( TargetInfo Target) : base(Target)
+	public BelugaEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
