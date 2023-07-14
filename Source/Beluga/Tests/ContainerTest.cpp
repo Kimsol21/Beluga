@@ -2,51 +2,95 @@
 #include "Misc/AutomationTest.h"
 
 
-// EAutomationTestFlags::ApplicationContextMask : 테스트에 필요한 애플리케이션 컨텍스트
-// EAutomationTestFlags::EngineFilter : 테스트의 스피드 관련 :  엔진 레벨 테스트
-
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaArrayTest, "Beluga.Array", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
-bool FBelugaArrayTest::RunTest(const FString& Parameters) 
+//============[ TArray TEST ]============================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaTArrayTest, "Beluga.TArray", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FBelugaTArrayTest::RunTest(const FString& Parameters)
 {
+	//-------------------[ Create, Add, Access ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		TArray<int32> TestArr = { 1, 2, 3 }; 
+		TestArr.Add(4); 
+		TestArr.Add(5);
 
-	TArray<int32> arr = {1, 2, 3};
+		int32 FirstElement = TestArr[0];
+		int32 LastElement = TestArr.Last();
+
+		TestEqual("[ Create, Add, Access ] test result", FirstElement, 1);
+		TestEqual("[ Create, Add, Access ] test result", LastElement, 5);
+	}
+	
+	//-------------------[ Remove ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		TArray<FString> TestArr = { TEXT("Apple"), TEXT("Banana"), TEXT("Cherry") };
+		TestArr.RemoveAt(1); 
+
+		TestEqual("[ Remove ] test result", TestArr[1], TEXT("Cherry"));
+	}
 
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaMapTest, "Beluga.Map", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
-bool FBelugaMapTest::RunTest(const FString& Parameters)
+
+//============[ TMap TEST ]============================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaTMapTest, "Beluga.TMap", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FBelugaTMapTest::RunTest(const FString& Parameters)
 {
-	TMap<FName, FString> map = {{TEXT("A"), TEXT("Apple")}, { TEXT("B"), TEXT("Banana") }, { TEXT("C"), TEXT("Cherry") }};
+	//-------------------[ Create, Add, Access ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		TMap<FString, int32> TestMap;
+		TestMap.Add(TEXT("Apple"), 9);
+		TestMap.Add(TEXT("Banana"), 2);
+		TestMap.Add(TEXT("Cherry"), 7);
+
+		int32 CherryCount = TestMap[TEXT("Cherry")]; 
+
+		TestEqual("[ Create, Add, Access ] test result", CherryCount, 7);
+	}
+
+	//-------------------[ Size ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		TMap<FString, int32> TestMap;
+		TestMap.Add(TEXT("Apple"), 1);
+		TestMap.Add(TEXT("Banana"), 1);
+		TestMap.Add(TEXT("Cherry"), 1);
+
+		int32 MapSize = TestMap.Num();
+
+		TestEqual("[ Size ] test result", MapSize, 3);
+	}
 
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaSetTest, "Beluga.Set", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
-bool FBelugaSetTest::RunTest(const FString& Parameters)
+
+//============[ TSet TEST ]============================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaTSetTest, "Beluga.TSet", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FBelugaTSetTest::RunTest(const FString& Parameters)
 {
+	//-------------------[ Create, Add, Access ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		TSet<int32> TestSet = { 1, 2, 3 };
+		TestSet.Add(4);
+		TestSet.Add(5);
+
+		bool bisContain = TestSet.Contains(2);
+
+		TestTrue("[ Create, Add, Access ] test result", bisContain);
+	}
+
+	//-------------------[ 교집합, 차집합, 합집합 구하기 ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		TSet<int32> SetA = { 1,2,3 };
+		TSet<int32> SetB = { 2,3,4 };
+
+		TSet<int32> IntersectionSet = SetA.Intersect(SetB); // 교집합 : { 2, 3 }
+		TSet<int32> DifferenceSet = SetA.Difference(SetB); // 차집합 : { 1 }
+		TSet<int32> UnionSet = SetA.Union(SetB); // 합집합 : { 1, 2, 3, 4 }
+
+		TestEqual("[ Intersect ] test result", IntersectionSet.Num(), 2);
+		TestEqual("[ Intersect ] test result", DifferenceSet.Num(), 1);
+		TestEqual("[ Intersect ] test result", UnionSet.Num(), 4);
+	}
+
 	return true;
 }
-
-void ArrayTest_1()
-{
-
-}
-
-//언리얼 Documents 예제
-//IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSetResTest, "Windows.SetResolution", ATF_Game)
-//bool FSetResTest::RunTest(const FString& Parameters)
-//{
-//	FString MapName = TEXT("AutomationTest");
-//	FEngineAutomationTestUtilities::LoadMap(MapName);
-//
-//	int32 ResX = GSystemSettings.ResX;
-//	int32 ResY = GSystemSettings.ResY;
-//	FString RestoreResolutionString = FString::Printf(TEXT("setres %dx%d"), ResX, ResY);
-//
-//	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(2.0f));
-//	ADD_LATENT_AUTOMATION_COMMAND(FExecStringLatentCommand(TEXT("setres 640x480")));
-//	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(2.0f));
-//	ADD_LATENT_AUTOMATION_COMMAND(FExecStringLatentCommand(RestoreResolutionString));
-//
-//	return true;

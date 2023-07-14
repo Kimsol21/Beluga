@@ -2,113 +2,149 @@
 #include "Misc/AutomationTest.h"
 
 
-
-// EAutomationTestFlags::EditorContext : 테스트에 필요한 애플리케이션 컨텍스트 : 이 테스트는 에디터 내에서 실행하기에 적합합니다라는 뜻.
-// EAutomationTestFlags::EngineFilter : 테스트의 스피드 관련 :  엔진 레벨 테스트
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaStringTest, "Beluga.String",EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
-bool FBelugaStringTest::RunTest(const FString& Parameters)
+//============[ FString TEST ]============================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaFStringTest, "Beluga.FString", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FBelugaFStringTest::RunTest(const FString& Parameters)
 {
-	 //대입 연산자 '=' 
+	//-------------------[ Constructor ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		// char
+		FString ResultStr_char("charType can be generated as FString");
+		// wchar
+		FString ResultStr_wchar(L"wcharType can be generated as FString");
+		// tchar
+		FString ResultStr_tchar(TEXT("tcharType can be generated as FString"));
+
+		UE_LOG(LogBeluga, Display, TEXT("FString Test -> Generate Test Result \n< %s > \n< %s > \n< %s >"), *ResultStr_char, *ResultStr_wchar, *ResultStr_tchar);
+	}
+
+	//-------------------[ Format ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FStringFormatArg Arg_name = "Sol";
+		FStringFormatArg Arg_age = "25";
+
+		// NamedArguments
+		FStringFormatNamedArguments NamedArgs;
+		NamedArgs.Add(TEXT("Name"), Arg_name);
+		NamedArgs.Add(TEXT("Age"), Arg_age);
+
+		FString ResultStr_NamedArg = FString::Format(TEXT("My Name is {Name}. I am {Age} years old."), NamedArgs);
+		UE_LOG(LogBeluga, Display, TEXT("FString Test -> Format -> NamedArguments Test Result : %s"), *ResultStr_NamedArg);
+
+
+		// OrderedArguments
+		FStringFormatOrderedArguments OrderedArgs;
+		OrderedArgs.Add(Arg_name);
+		OrderedArgs.Add(Arg_age);
+
+		FString ResultStr_OrderedArg = FString::Format(TEXT("My Name is {0}. I am {1} years old"), OrderedArgs);
+		UE_LOG(LogBeluga, Display, TEXT("FString Test -> Format -> NamedArguments Test Result : %s"), *ResultStr_OrderedArg);
+	}
+
+	//-------------------[ Get TCHAR* ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FString TestStr("Test");
+		const TCHAR* TcharType = GetData(TestStr);
+
+		UE_LOG(LogBeluga, Display, TEXT("FString Test -> Get TCHAR* Test Result : %s , %s"), TcharType, *TestStr);
+	}
+
+	//-------------------[ Printf Function ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	{
 		FString ResultStr("");
-		FString InputStr("str");
-		ResultStr = InputStr;
+		FString InputStr("Hello");
+		ResultStr = FString::Printf(TEXT("%s"), *InputStr);
 
-		check(ResultStr == "str");
-
+		TestEqual("[ Printf() Function ] test result", ResultStr, InputStr);
 	}
-	//TestTrue Add Anything
-	//TestTrueExpr
 
-	/*bool vv = true;
+	//-------------------[ operator '[]' ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FString TestStr("ABCDE");
+		TestEqual("[ operator '[]' ] test result", TestStr[3], 'D');
+	}
 
-	TestTrueExpr(vv == true);*/
+	//-------------------[ operator '=' ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		// char
+		FString ResultStr_char = "charType can be assigned to FString";
+		// wchar
+		FString ResultStr_wchar = L"wcharType can be assigned to FString";
+		// tchar
+		FString ResultStr_tchar = TEXT("tcharType can be assigned to FString");
 
-	TestTrue(TEXT("Always TRUE!"), true);
+		UE_LOG(LogBeluga, Display, TEXT("FString Test -> Assignment Operator Test Result \n< %s > \n< %s > \n< %s >"), *ResultStr_char, *ResultStr_wchar, *ResultStr_tchar);
+	}
 
+	//-------------------[ operator 'comparison' ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FString BigStr("Banana");
+		FString SmallStr("Apple");
 
+		TestTrue("[ operator '>' ] test result", BigStr > SmallStr);
+		TestTrue("[ operator '>=' ] test result", BigStr >= SmallStr);
+		TestTrue("[ operator '<' ] test result", SmallStr < BigStr);
+		TestTrue("[ operator '<=' ] test result", SmallStr <= BigStr);
+	}
 
-	//FString::Printf(TEXT("%d %f")); // 이거는 좀 구식 C Style
+	//-------------------[ Get Length ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FString TestStr("Test");
+		int32 TestStr_Length = TestStr.Len();
 
-	//FStirng::Format(TEXT(""); // 이거는 최신에서 많이 사용하는 방식 C# Style, 중괄호 문법. 
+		TestEqual("[ Get Length ] test result", TestStr_Length, 4);
+	}
 
 	return true;
 }
 
 
-
-void Test1()
+//============[ FName TEST ]============================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaFNameTest, "Beluga.FName", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FBelugaFNameTest::RunTest(const FString& Parameters)
 {
-	// 생성
-		// char		"asdf"
-		// wchar	L"asdf"
-		// tchar	TEXT("asdf")
+	//-------------------[ 생성 및 유효성 검사 ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FName TestName1 = FName(TEXT("KimSol"));
+		bool bisValid = TestName1.IsValid();
 
-	// 대입 연산자 = 
-	/*{
-		FString ResultStr("");
-		FString InputStr("str");
-		ResultStr = InputStr;
+		TestTrue("[ Valid ] test result", bisValid);
+	}
 
-		check(ResultStr == "str");
-	}*/
+	//-------------------[ FName -> FString ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FName TestName2 = FName(TEXT("NameToString"));
+		FString ResultStr = TestName2.ToString(); // FName을 FString으로 변환
 
-	// Printf
-	/*{
-		FString ResultStr("");
-		FString InputStr("str");
-		ResultStr = FString::Printf(InputStr);
+		TestEqual("[ FName -> FString ] test result", ResultStr, "NameToString");
+	}
 
-		check(ResultStr == "str");
-	}*/
-
-	// Format
-		// FStringFormatNamedArguments
-		// FStringFormatOrderedArguments
-
-	// operator []
-
-	// 대소비교
-
-	// TCHAR* 얻기
-	// operator*
-
-	//길이 구하기
-	//{
-	//	FString str("str");
-	//	int32 LenStr = str.Len();
-
-	//	check(LenStr == 0); //어설션
-	//}
-
-	//Replace
-	/*{
-		FString str(TEXT("asdf"));
-		FString result = str.Replace(TEXT("sd"), TEXT("ds"));
-
-		check(result == TEXT("adsf"));
-	}*/
-
-	// Insert
-
-	// clear
-
-	// Split
-
-	// IsEmpty
-
-	// Shrink
-
-	// RemoveAt
-
-	// find 로 인덱스
-
-	// Left
-	// Mid
-	// Right
-
-	// 대문자로 변환, 소문자로 변환
+	return true;
 }
 
 
+//============[ FText TEST ]============================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBelugaFTextTest, "Beluga.FText", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FBelugaFTextTest::RunTest(const FString& Parameters)
+{
 
+	//-------------------[ 값 비교 ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		FText TextA = FText::FromString(TEXT("Hello"));
+		FText TextB = FText::FromString(TEXT("Hello"));
+
+		bool bIsSame = TextA.EqualTo(TextB);
+
+		TestTrue("[ Compair Text ] test result", bIsSame);
+	}
+
+	//-------------------[ 날짜 Text 변환, 유효성 검사 ]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	{
+		const FDateTime MyDateTime(2023, 07, 15);
+		FText ResultText = FText::AsDate(MyDateTime);
+
+		TestEqual("[ TextAsDate ] test result", ResultText.ToString(), FString("2023. 7. 15."));		
+	}
+
+	return true;
+}
