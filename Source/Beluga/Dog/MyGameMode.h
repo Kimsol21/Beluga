@@ -10,12 +10,4 @@ class AMyGameMode : public AGameModeBase
 public:
 	AMyGameMode();
 
-	UPROPERTY()
-	int32 Number;
-
-	UFUNCTION()
-	bool HongikUniv();
-
-	APawn* BPMyPawn;
-
 };
