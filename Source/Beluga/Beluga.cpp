@@ -1,4 +1,5 @@
 #include "BelugaMinimal.h"
+#include "Beluga/Reflection/MyGameMode.h"
 DEFINE_LOG_CATEGORY(LogBeluga);
 
 
