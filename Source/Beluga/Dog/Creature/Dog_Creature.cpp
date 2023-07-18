@@ -17,3 +17,20 @@ void UDog_Creature::Init()
 	CurrentHP = MaxHP;
 	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::White, FString::Printf(TEXT("%s 가 생성되었습니다."), *Name.ToString()));
 }
+
+FString UDog_Creature::CPP_Hello()
+{
+	
+	return HelloMsg;
+}
+
+FName UDog_Creature::CPP_GetName()
+{
+	return Name;
+}
+
+
+void UDog_Creature::BOTH_Update_Implementation()
+{
+	HelloMsg = HelloMsg.ToUpper();
+}
